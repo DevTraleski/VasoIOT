@@ -1,29 +1,11 @@
-#! /usr/bin/python
-# -*- coding: utf-8 -*-
+import paho.mqtt.client as mqtt
 
-import RPi.GPIO as gpio
-import time
+user = '6c6d5650-e6a4-11e8-810f-075d38a26cc9'
+password = '713db477c813147b9b07cc2056b70d787e6aa709'
+client_id = '68433c30-e6c6-11e8-810f-075d38a26cc9'
+server = 'mqtt.mydevices.com'
+port = 1883
 
-gpio.setmode(gpio.BCM)
-gpio.setup(4, gpio.IN, pull_up_down = gpio.PUD_DOWN)
-gpio.setup(17, gpio.IN, pull_up_down = gpio.PUD_DOWN)
-gpio.setup(21, gpio.OUT)
-
-waterPumpIsOn = False
-while True:
-	if(gpio.input(17) == 1):
-		#Nivel de agua baixo, alertar usuário
-
-	if(gpio.input(4) == 1):
-		print("Nivel de humidade: OK")
-		if(waterPumpIsOn == True):
-			gpio.output(21, 0)
-	else:
-		print("Nivel de humidade: BAIXO")
-		#Ativar bomba da água
-		if(waterPumpIsOn == False):
-			gpio.output(21, 1)
-	time.sleep(1)
-
-gpio.cleanup()
-exit()
+client = mqtt.Client(client_id)
+client.username_pw_set(user, password)
+client.connect(server, port)
