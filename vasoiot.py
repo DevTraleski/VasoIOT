@@ -14,9 +14,20 @@ def mensagens(client, userdata, msg):
 	p = msg.payload.decode().split(',')
 	client.publish(publish + '1', p[-1])
 
+def connect(server, port):
+	try:
+		client.connect(server, port)
+	except:
+		print("Could not connect")
+		print("Trying again in 1 second")
+		time.sleep(2)
+		connect(server, port)
+
 client = mqtt.Client(client_id)
 client.username_pw_set(user, password)
-client.connect(server, port)
+
+connect(server, port)
+
 client.on_message = mensagens
 client.subscribe(subscribe + '1')
 
