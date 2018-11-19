@@ -49,11 +49,20 @@ client.loop_start()
 while(True):
 	level = gpio.input(20)
 	humidity = gpio.input(21)
-	client.publish(publish + '0', humidity)
-	client.publish(publish + '1', level)
+
+	if(humidity == 0):
+		client.publish(publish + '0', 1)
+	elif(humidity == 1):
+		client.publish(publish + '0', 0)
+
+	if(level == 0):
+		client.publish(publish + '1', 1)
+	elif(level == 1):
+		client.publish(publish + '1', 0)
+
 	print("Humidity: " + str(humidity))
 	print("Level: " + str(level))
-	if(humidity == 0):
+	if(humidity == 1):
 		#Start a pump cycle
 		print("Starting pump cycle")
 		gpio.output(4, 1)
