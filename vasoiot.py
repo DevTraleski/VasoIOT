@@ -70,4 +70,4 @@ while(True):
 		gpio.output(4, 0)
 		print("Done. Resuming...")
 
-	time.sleep(1)
+	time.sleep(2)
