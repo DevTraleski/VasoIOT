@@ -3,9 +3,14 @@ import paho.mqtt.client as mqtt
 import time
 
 gpio.setmode(gpio.BCM)
+
+#Sendor de umidade
 gpio.setup(21, gpio.IN, pull_up_down = gpio.PUD_DOWN)
+#Sensor de nivel
 gpio.setup(20, gpio.IN, pull_up_down = gpio.PUD_DOWN)
+#Motor
 gpio.setup(4, gpio.OUT)
+gpio.output(4, 0)
 
 user = '6c6d5650-e6a4-11e8-810f-075d38a26cc9'
 password = '713db477c813147b9b07cc2056b70d787e6aa709'
@@ -52,7 +57,7 @@ while(True):
 		#Start a pump cycle
 		print("Starting pump cycle")
 		gpio.output(4, 1)
-		time.sleep(30)
+		time.sleep(5)
 		gpio.output(4, 0)
 		print("Done. Resuming...")
 
