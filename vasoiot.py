@@ -1,5 +1,11 @@
+import RPi.GPIO as gpio
 import paho.mqtt.client as mqtt
 import time
+
+gpio.setmode(gpio.BCM)
+gpio.setup(21, gpio.IN, pull_up_down = gpio.PUD_DOWN)
+gpio.setup(20, gpio.IN, pull_up_down = gpio.PUD_DOWN)
+gpio.setup(4, gpio.OUT)
 
 user = '6c6d5650-e6a4-11e8-810f-075d38a26cc9'
 password = '713db477c813147b9b07cc2056b70d787e6aa709'
@@ -16,10 +22,11 @@ def mensagens(client, userdata, msg):
 
 def connect(server, port):
 	try:
+		print("Connecting...")
 		client.connect(server, port)
 	except:
 		print("Could not connect")
-		print("Trying again in 1 second")
+		print("Trying again in 2 seconds...")
 		time.sleep(2)
 		connect(server, port)
 
@@ -27,6 +34,7 @@ client = mqtt.Client(client_id)
 client.username_pw_set(user, password)
 
 connect(server, port)
+print("Connected!\n")
 
 client.on_message = mensagens
 client.subscribe(subscribe + '1')
@@ -34,7 +42,18 @@ client.subscribe(subscribe + '1')
 client.loop_start()
 
 while(True):
-	client.publish(publish + '0', 100)
-	time.sleep(5)
-	client.publish(publish + '0', 0)
-	time.sleep(5)
+	level = gpio.input(20)
+	humidity = gpio.input(21)
+	client.publish(publish + '0', humidity)
+	client.publish(publish + '1', level)
+	print("Humidity: " + str(humidity))
+	print("Level: " + str(level))
+	if(humidity == 0):
+		#Start a pump cycle
+		print("Starting pump cycle")
+		gpio.output(4, 1)
+		time.sleep(30)
+		gpio.output(4, 0)
+		print("Done. Resuming...")
+
+	time.sleep(1)
