@@ -21,10 +21,6 @@ port = 1883
 publish = 'v1/' + user + '/things/' + client_id + '/data/'
 subscribe = 'v1/' + user + '/things/' + client_id + '/cmd/'
 
-def mensagens(client, userdata, msg):
-	p = msg.payload.decode().split(',')
-	client.publish(publish + '1', p[-1])
-
 def connect(server, port):
 	try:
 		print("Connecting...")
@@ -40,9 +36,6 @@ client.username_pw_set(user, password)
 
 connect(server, port)
 print("Connected!\n")
-
-client.on_message = mensagens
-client.subscribe(subscribe + '1')
 
 client.loop_start()
 
